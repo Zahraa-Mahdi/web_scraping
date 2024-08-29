@@ -1,7 +1,6 @@
 # Data-science Bootcamp
-
--Task 1 :This project is about web scraping using Python, which is designed to collect articles from the al-Mayadeen website by parsing the sitemaps to find the URLs, then scraping the metadata from each article and saving them in a JSON file.
--Task 2 :This project was about to store the data i have in the JSON files in a MongoDB, and provide access to the data using Flask API.
+- Task 1 :This project is about web scraping using Python, which is designed to collect articles from the al-Mayadeen website by parsing the sitemaps to find the URLs, then scraping the metadata from each article and saving them in a JSON file. 
+- Task 2 :This project was about to store the data i have in the JSON files in a MongoDB, and provide access to the data using Flask API.
 
 # FEATURES
 - parsing sitemap's .
