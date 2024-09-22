@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #dashboard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #sentiment-trends, #entity-filter, #trend-data {
+            margin-bottom: 20px;
+        }
+        #entity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #entity-list li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard">
+        <h1>Analytics Dashboard</h1>
+        <div id="sentiment-trends">
+            <h2>Sentiment Trends</h2>
+            <canvas id="sentiment-chart"></canvas>
+        </div>
+        <div id="entity-filter">
+            <h2>Filter by Entity</h2>
+            <input type="text" id="entity-input" placeholder="Enter entity">
+            <button id="entity-button">Filter</button>
+            <ul id="entity-list"></ul>
+        </div>
+        <div id="trend-data">
+            <h2>Trend Data</h2>
+            <canvas id="trend-chart"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Get the canvas elements for the charts
+        const sentimentChartCanvas = document.getElementById('sentiment-chart');
+        const trendChartCanvas = document.getElementById('trend-chart');
+
+        // Create the charts using Chart.js
+        const sentimentChart = new Chart(sentimentChartCanvas, {
+            type: 'line',
+            data: {
+                labels: [], // Add labels for the x-axis (e.g., dates)
+                datasets: [{
+                    label: 'Sentiment',
+                    data: [], // Add data for the sentiment trend
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Sentiment Trends'
+                }
+            }
+        });
+
+        const trendChart = new Chart(trendChartCanvas, {
+            type: 'line',
+            data: {
+                labels: [], // Add labels for the x-axis (e.g., dates)
+                datasets: [{
+                    label: 'Trend',
+                    data: [], // Add data for the trend
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Trend Data'
+                }
+            }
+        });
+
+        // Add event listener for the entity filter button
+        document.getElementById('entity-button').addEventListener('click', () => {
+            const entityInput = document.getElementById('entity-input').value;
+            // Make API call to fetch articles by entity
+            fetch(`/articles_by_entity/${entityInput}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update the entity list with the fetched data
+                    const entityList = document.getElementById('entity-list');
+                    entityList.innerHTML = '';
+                    data.forEach(article => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = article.title;
+                        entityList.appendChild(listItem);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>

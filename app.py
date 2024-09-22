@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
+from textblob import TextBlob
 from flask import Flask, jsonify, render_template
 from pymongo import MongoClient, UpdateOne
-
 app = Flask(__name__)
 
 # Connect to MongoDB
@@ -344,16 +344,6 @@ def articles_with_more_than(word_count):
     result = list(collection.aggregate(pipeline))
     return jsonify(result)
 
-#Route for getting articles grouped by cogerage
-@app.route('/articles_grouped_by_coverage', methods=['GET'])
-def articles_grouped_by_coverage():
-    pipeline = [
-        {"$unwind": "$classes"},
-        {"$group": {"_id": "$classes.value", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]
-    result = list(collection.aggregate(pipeline))
-    return jsonify(result)
 
 #route for articles in last x hours
 @app.route('/articles_last_X_hours/<int:hours>', methods=['GET'])
@@ -366,16 +356,6 @@ def articles_last_X_hours(hours):
     result = list(collection.aggregate(pipeline))
     return jsonify(result)
 
-#route for articles by title length
-@app.route('/articles_by_title_length', methods=['GET'])
-def articles_by_title_length():
-    pipeline = [
-        {"$project": {"title_length": {"$size": {"$split": ["$title", " "]}}}},
-        {"$group": {"_id": "$title_length", "count": {"$sum": 1}}},
-        {"$sort": {"_id": 1}}
-    ]
-    result = list(collection.aggregate(pipeline))
-    return jsonify(result)
 
 #route for most updated articles
 @app.route('/most_updated_articles', methods=['GET'])
