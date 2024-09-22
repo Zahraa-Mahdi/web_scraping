@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recent Articles</title>
+    <style>
+        #tablediv { width: 100%; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <div id="tablediv">
+        <table id="recent-articles-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Publication Date</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+            </tbody>
+        </table>
+    </div>
+    <script>
+        fetch('http://127.0.0.1:5000/recent_articles')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById("table-body");
+                data.forEach(item => {
+                    const row = tableBody.insertRow();
+                    const titleCell = row.insertCell();
+                    const dateCell = row.insertCell();
+                    titleCell.innerHTML = item.title;
+                    dateCell.innerHTML = item.publication_date;
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

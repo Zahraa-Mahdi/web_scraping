@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles with Thumbnail</title>
+    <style>
+        #chartdiv { width: 100%; height: 500px; }
+    </style>
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+</head>
+<body>
+    <div id="chartdiv"></div>
+    <script>
+        am4core.useTheme(am4themes_animated);
+
+        var chart = am4core.create("chartdiv", am4charts.PieChart);
+
+        chart.data = [];
+
+        var pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "count";
+        pieSeries.dataFields.category = "title";
+        pieSeries.name = "Articles with Thumbnail";
+
+        fetch('http://127.0.0.1:5000/articles_with_thumbnail')
+            .then(response => response.json())
+            .then(data => {
+                var counts = {};
+                data.forEach(item => {
+                    if (!counts[item.title]) {
+                        counts[item.title] = 0;
+                    }
+                    counts[item.title]++;
+                });
+                var pieData = Object.keys(counts).map(key => {
+                    return { title: key, count: counts[key] };
+                });
+                chart.data = pieData;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

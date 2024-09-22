@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles Updated After Publication</title>
+    <style>
+        #chartdiv { width: 100%; height: 500px; }
+    </style>
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+</head>
+<body>
+    <div id="chartdiv"></div>
+    <script>
+        am4core.useTheme(am4themes_animated);
+
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+        chart.data = [];
+
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "_id";
+        categoryAxis.renderer.minWidth = 50;
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.renderer.minWidth = 50;
+
+        var barSeries = chart.series.push(new am4charts.ColumnSeries());
+        barSeries.dataFields.valueY = "count";
+        barSeries.dataFields.categoryX = "_id";
+        barSeries.name = "Articles Updated After Publication";
+
+        fetch('http://127.0.0.1:5000/articles_updated_after_publication')
+            .then(response => response.json())
+            .then(data => {
+                var counts = {};
+                data.forEach(item => {
+                    if (!counts[item._id]) {
+                        counts[item._id] = 0;
+                    }
+                    counts[item._id]++;
+                });
+                var barData = Object.keys(counts).map(key => {
+                    return { _id: key, count: counts[key] };
+                });
+                chart.data = barData;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

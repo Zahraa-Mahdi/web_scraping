@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles by Keyword Count</title>
+    <style>
+        #chartdiv { width: 100%; height: 500px; }
+    </style>
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+</head>
+<body>
+    <div id="chartdiv"></div>
+    <script>
+        am4core.useTheme(am4themes_animated);
+
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+        chart.data = [];
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.renderer.minWidth = 50;
+
+        var histogramSeries = chart.series.push(new am4charts.HistogramSeries());
+        histogramSeries.dataFields.valueY = "count";
+        histogramSeries.dataFields.categoryX = "_id";
+        histogramSeries.name = "Articles by Keyword Count";
+
+        fetch('http://127.0.0.1:5000/articles_by_keyword_count')
+            .then(response => response.json())
+            .then(data => {
+                chart.data = data;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

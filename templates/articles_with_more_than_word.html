@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles with More Than {{ word_count }} Words</title>
+    <style>
+        #chartdiv { width: 100%; height: 500px; }
+    </style>
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+</head>
+<body>
+    <div id="chartdiv"></div>
+    <script>
+        am4core.useTheme(am4themes_animated);
+
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+        chart.data = [];
+
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "title";
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.renderer.minWidth = 50;
+
+        var barSeries = chart.series.push(new am4charts.ColumnSeries());
+        barSeries.dataFields.valueY = "word_count";
+        barSeries.dataFields.categoryX = "title";
+        barSeries.name = "Articles with More Than {{ word_count }} Words";
+
+        fetch('http://127.0.0.1:5000/articles_with_more_than/' + {{ word_count }})
+            .then(response => response.json())
+            .then(data => {
+                var chartData = [];
+                data.forEach(item => {
+                    var chartItem = { title: item.title, word_count: item.word_count };
+                    chartData.push(chartItem);
+                });
+                chart.data = chartData;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>

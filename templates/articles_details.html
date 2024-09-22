@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article Details</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Article Details</h1>
+    <table id="article-table"></table>
+    <script>
+        fetch('http://127.0.0.1:5000/article_details/' + postid)
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('article-table');
+                const headers = Object.keys(data);
+                const rows = [headers].concat([Object.values(data)]);
+
+                rows.forEach(row => {
+                    const rowElement = table.insertRow();
+                    row.forEach(cell => {
+                        const cellElement = rowElement.insertCell();
+                        cellElement.textContent = cell;
+                    });
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
